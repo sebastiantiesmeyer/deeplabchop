@@ -31,10 +31,10 @@ def predict_video(config, video):
     cfg = load_config(config_path)
 
     print('Looking for latest snapshot...')
-    snapshots = [s.with_suffix('').name for s in training_path.glob('snapshot-*.index')]
-    latest_snapshot_id = max([int(s[len('snapshot-'):]) for s in snapshots])
+    snapshots = [s for s in training_path.glob('**/snapshot-*.index')]
+    latest_snapshot_id = max([int(s.name[len('snapshot-'):].split('.')[0]) for s in snapshots])
     latest_snapshot = 'snapshot-{}'.format(latest_snapshot_id)
-    snapshot_path = training_path / latest_snapshot
+    snapshot_path = [s.parent/latest_snapshot for s in snapshots if latest_snapshot in s.name][0]
     print('Using snapshot {} at "{}'.format(latest_snapshot_id, snapshot_path))
 
     cfg['init_weights'] = str(snapshot_path)

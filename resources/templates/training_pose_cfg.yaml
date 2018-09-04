@@ -20,7 +20,7 @@ scale_jitter_lo: 0.5
 scale_jitter_up: 1.5
 
 # Randomly flips an image horizontally to augment training data
-mirror: false
+mirror: true
 
 # Type of the CNN to use, currently resnet_101 and resnet_50
 # are supported

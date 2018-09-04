@@ -48,7 +48,7 @@ def yaml_config_template(yaml_path, cfg):
             yaml.dump({k: cfg[k]}, cf, default_flow_style=False)
 
 
-def project(project, experimenter, videos, working_directory=None, copy_videos=True):
+def project(project, experimenter, videos, working_directory=None, copy_videos=False):
     """Create a new project directory, sub-directories and basic configuration file.
     """
     date = dt.today().strftime('%Y-%m-%d')
@@ -96,7 +96,7 @@ def project(project, experimenter, videos, working_directory=None, copy_videos=T
         rel_img_path = Path(os.path.relpath(data_path, project_path)).joinpath(video.with_suffix('').name).as_posix()
 
         image_sets[str(rel_video_path)] = {'img_path': rel_img_path,
-                                           'crop': ', '.join(map(str, [0, 0, -1, -1]))}
+                                           'crop': ', '.join(map(str, [187, 60, 880, 790]))}
 
     # Configuration file templates
     cfg_dict = {'experimenter': experimenter,

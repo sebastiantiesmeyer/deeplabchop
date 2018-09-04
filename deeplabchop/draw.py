@@ -29,7 +29,7 @@ def draw_predictions_video(results, video, markersize=4, cmap_name=DEFAULT_COLOR
 
     cmap = plt.cm.get_cmap(cmap_name, len(joints))
 
-    clip_out = io.FFmpegWriter(str(video_path.with_suffix('.labeled.mp4')),
+    clip_out = io.FFmpegWriter(str(video_path.with_suffix('.labeled.avi')),
                                inputdict={'-r': str(clip.fps)},
                                outputdict={'-r': str(clip.fps)})
 

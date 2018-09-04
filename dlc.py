@@ -1,7 +1,8 @@
 from deeplabchop import cli
 
-def main():
-    cli.main()
+#print('starting')
+#def main():
+cli.main()
 
-if __name__ == '__main__':
-    main()
+#if __name__ == '__main__':
+#    main()

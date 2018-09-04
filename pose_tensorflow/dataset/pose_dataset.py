@@ -9,7 +9,7 @@ from numpy import concatenate as cat
 
 import scipy.io as sio
 from scipy.misc import imread, imresize
-
+import pickle
 
 class Batch(Enum):
     inputs = 0
@@ -43,7 +43,6 @@ def data_to_input(data):
 
 class DataItem:
     pass
-
 
 class PoseDataset:
     def __init__(self, cfg):
@@ -299,3 +298,57 @@ class PoseDataset:
         else:
             weights = np.ones(scmap_shape)
         return weights
+
+
+class ChopDataset(PoseDataset):
+    def __init__(self, cfg, pkl_name, in_memory=True):
+        self.dataset = pickle.load( open( pkl_name, "rb" ) )
+        self.cfg = cfg
+        
+    def load_dataset(self):
+        self.img_names = list(self.dataset.keys())
+        self.imgs = {}
+        for name in self.img_names:
+            self.imgs[name]=imread(name, mode='RGB')
+        
+        
+#from easydict import EasyDict as edict
+#
+#cfg = edict()
+#
+#cfg.stride = 8.0
+#cfg.weigh_part_predictions = False
+#cfg.weigh_negatives = False
+#cfg.fg_fraction = 0.25
+#cfg.weigh_only_present_joints = False
+#cfg.mean_pixel = [123.68, 116.779, 103.939]
+#cfg.shuffle = True
+#cfg.snapshot_prefix = "./snapshot"
+#cfg.log_dir = "log"
+#cfg.global_scale = 1.0
+#cfg.location_refinement = False
+#cfg.locref_stdev = 7.2801
+#cfg.locref_loss_weight = 1.0
+#cfg.locref_huber_loss = True
+#cfg.optimizer = "sgd"
+#cfg.intermediate_supervision = False
+#cfg.intermediate_supervision_layer = 12
+#cfg.regularize = False
+#cfg.weight_decay = 0.0001
+#cfg.mirror = False
+#cfg.crop = False
+#cfg.crop_pad = 0
+#cfg.scoremap_dir = "test"
+#cfg.dataset_type = "default"
+#cfg.use_gt_segm = False
+#cfg.batch_size = 1
+#cfg.video = False
+#cfg.video_batch = False
+#
+#
+#cd = ChopDataset(cfg,"/home/sebastian/code/deeplabchop/calimag-sebastian-2018-08-24/labels.pkl")
+
+
+
+
+
