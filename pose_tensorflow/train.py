@@ -21,7 +21,7 @@ class LearningRate(object):
         
     def get_lr(self, iteration):
         if self.continuous: 
-            lr = (self.current_step*0.0001)*(0.9**(self.current_step*0.0001))*0.01 
+            lr = (self.current_step*0.0001)*(0.9**(self.current_step*0.0001))*0.005 
             self.current_step+=1
         else:
             lr = self.steps[self.current_step][0]
