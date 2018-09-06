@@ -99,20 +99,20 @@ def step(project):
     if 'Annotated' not in project_status or not project_status['Annotated']:
         do_labeling = input('Run labeling GUI? [Y/n]')
         if not do_labeling in ['N','n']:
-            GUI_utils.run_labeler(cfg,root='projects'/project)
+            GUI_utils.run_labeler(cfg,root=project)
+        else:
+            _echo('Looking for joint annotation files...')
+            for n, (video, metadata) in enumerate(cfg['image_sets'].items()):
+                img_path = (project / Path(metadata['img_path'])).resolve()
+                print(img_path)
+                if not img_path.joinpath('Results.csv').exists():
+                    print('Missing `Results.csv` for {}'.format(img_path))
+                    return
 
-        _echo('Looking for joint annotation files...')
-        for n, (video, metadata) in enumerate(cfg['image_sets'].items()):
-           img_path = (project / Path(metadata['img_path'])).resolve()
-           print(project)
-           if not img_path.joinpath('Results.csv').exists():
-               print('Missing `Results.csv` for {}'.format(img_path))
-               return
-
-           # Minimize ImageJ csv
-           joints = cfg['joints']
-           print(joints)
-           label.reduce_imagej_csv(img_path, cfg['joints'], cfg['experimenter'])
+                # Minimize ImageJ csv
+                joints = cfg['joints']
+                print(joints)
+                label.reduce_imagej_csv(img_path, cfg['joints'], cfg['experimenter'])
         
         util.update_yaml(project / 'status.yaml', {'Annotated': True})
         _echo('Minimized {} image set label file(s).'.format(len(cfg['image_sets'])))
@@ -125,6 +125,7 @@ def step(project):
     if 'TrainingLabelsDrawn' not in project_status or not project_status['TrainingLabelsDrawn']:
         _echo('Drawing labels on images in data sets for verification...')
         for n, (video, metadata) in enumerate(cfg['image_sets'].items()):
+            print(video,metadata)
             label.draw_image_labels(project / metadata['img_path'] / 'multijoint.csv', cfg['joints'],
                                     cmap_name=cfg['cmap'] if 'cmap' in cfg else None)
         util.update_yaml(project / 'status.yaml', {'TrainingLabelsDrawn': True})

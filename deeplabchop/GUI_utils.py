@@ -84,7 +84,7 @@ class Controller_label_GUI():
         self.shift = False
         
         fig, ax = plt.subplots()
-        plt.title('Label images, navigate with arrow keys. c to clear current frame, q to exit.')
+        plt.title('Label images, navigate with arrow keys. backspace to remove label, q to exit.')
         ax.imshow(self.frames[self.current_frame])
 
         def switchfun(label):
@@ -98,7 +98,7 @@ class Controller_label_GUI():
         def draw_screen():
             ax.clear()
             if preview_next and self.category == len(self.category_names)-1:
-                ax.imshow(self.frames[self.current_frame]//4*3+self.frames[(self.current_frame+1)%len(self.category_names)]//4)
+                ax.imshow(self.frames[self.current_frame]//4*3+self.frames[(self.current_frame+1)%len(self.frames)]//4)
             else:
                 ax.imshow(self.frames[self.current_frame]) 
             for l in self.labels[self.current_frame].values(): ax.scatter(l[0],l[1])
@@ -106,7 +106,7 @@ class Controller_label_GUI():
 
         def onclick(event):
             nonlocal radio
-            if event.button==1:
+            if event.button==1 and not event.xdata is None and not event.ydata>0 is None:
                 if self.shift:
                     #print(self.labels[self.current_frame][self.category_names[self.category]])
                     (self.labels[self.current_frame][self.category_names[self.category]])[0].append(event.xdata)
@@ -175,12 +175,6 @@ def run_labeler(cfg,root='.'):
     experimenter = cfg['experimenter']
     frames = []
     names = []
-    #pic_folder = '/home/sebastian/code/deeplabchop/calimag-sebastian-2018-08-24'
-
-    #for  root, dirs, files  in os.walk(pic_folder):
-    #    for f in [f for f in files if '.png' in f]:
-    #        print(f)
-    #        frames.append(imageio.imread(os.path.join(root,f)))
 
     for image_set in cfg['image_sets'].items():
         for image in [f for f in os.listdir(os.path.join(root,image_set[1]['img_path'])) if '.png' in f]:
@@ -194,11 +188,14 @@ def run_labeler(cfg,root='.'):
     #print(labels_out)
     #img4680.png,sebastian,head,130,247
     for i,name in enumerate(names):
-        file_name=os.path.basename(name)
-        with open(name, 'a') as f:
+        file_name=os.path.join(os.path.dirname(name),'multijoint.csv')
+        print(file_name)
+        with open(file_name, 'a') as f:
             for label in labels_out[i].keys():
+                print(labels_out[i][label][0])
                 #line = ','.join([file_name,experimenter,label,str(int(labels_out[i][label][0][0])),str(int(labels_out[i][label][1][0]))]+'\n')
-                f.write(','.join([file_name,experimenter,label,str(int(labels_out[i][label][0][0])),str(int(labels_out[i][label][1][0]))])+'\n')
+                if labels_out[i][label][0]:
+                    f.write(','.join([os.path.basename(name),experimenter,label,str(int(labels_out[i][label][0][0])),str(int(labels_out[i][label][1][0]))])+'\n')
 
 
 
